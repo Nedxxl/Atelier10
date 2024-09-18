@@ -20,4 +20,9 @@ app.use(function(req, res, next) {
     res.status(404).send('Error 404: Page not found');
 });
 
-app.listen(8080);
+var server = app.listen(8080);
+var io = require('socket.io') (server);
+
+io.sockets.on('connection', function(socket) {
+    console.log('Un client est connecté');
+    });
