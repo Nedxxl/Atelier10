@@ -9,24 +9,68 @@
     <header>
         <%- include('../partials/header') %>
     </header>
- 
+
     <main>
         <div class="jumbotron">
             <h1>This is great</h1>
             <p>Welcome to templating using EJS</p>
+            <p id="messages">no client</p>
         </div>
     </main>
-    
+
     <script src="/socket.io/socket.io.js"></script>
-    <script> 
-    var socket = io.connect('http://localhost:8080');
+    <script>
+        var socket = io.connect('http://localhost:8080');
     </script>
-    
- 
+
+
+    <p> Le serveur a ete lancer le <%= jour%>/<%= mois%>/<%= annee%> a <%= heure%>/<%= minute%>/<%= seconde%>
+    </p>
+
+    <span>Le serveur client a ete lancer le </span>
+    <span id="anneeClient"></span>
+    <span> / </span>
+    <span id="moisClient"></span>
+    <span> / </span>
+    <span id="jourClient"></span>
+    <span> il est presentement </span>
+    <span id="heureClient"></span>
+    <span> : </span>
+    <span id="minuteClient"></span>
+    <span> : </span>
+    <span id="secondeClient"></span>
+
 
     <footer>
         <%- include('../partials/footer') %>
     </footer>
+    <script>
+        socket.on('message', function (message) {
+            $('#messages').text(message);
+        });
 
+        $(function () {
+
+            function Horloge() {
+                var clientNow = new Date();
+                var clientAnnee = clientNow.getFullYear();
+                var clientMois = clientNow.getMonth();
+                var clientJour = clientNow.getDate();
+                var clientHeure = clientNow.getHours();
+                var clientMinute = clientNow.getMinutes();
+                var clientSeconde = clientNow.getSeconds();
+                $("#anneeClient").text(clientAnnee);
+                $("#moisClient").text(clientMois);
+                $("#jourClient").text(clientJour);
+                $("#heureClient").text(clientHeure);
+                $("#minuteClient").text(clientMinute);
+                $('#secondeClient').text(clientSeconde);
+            }
+            setInterval(Horloge, 1000);
+
+        });
+
+    </script>
 </body>
+
 </html>
