@@ -15,6 +15,7 @@
             <h1>This is great</h1>
             <p>Welcome to templating using EJS</p>
             <p id="messages">no client</p>
+            <p id="hours">no hours set</p>
         </div>
     </main>
 
@@ -39,38 +40,61 @@
     <span id="minuteClient"></span>
     <span> : </span>
     <span id="secondeClient"></span>
+    
+    <form onsubmit="return false;">
+        <input type="time" id="alarme"/>
+        <button id="poke">Set time</button>
+
+        <script>
+            var alarme = '12:34';
+            var once = 0;
+            socket.on('message', function (message) {
+                $('#messages').text(message);
+            });
+            socket.on('hours', function (message) {
+                $('#hours').text(message);
+                once = 0;
+                alarme = message;
+            });
+
+            $(function () {
+
+                function Horloge() {
+                    var clientNow = new Date();
+                    var clientAnnee = clientNow.getFullYear();
+                    var clientMois = clientNow.getMonth();
+                    var clientJour = clientNow.getDate();
+                    var clientHeure = clientNow.getHours();
+                    var clientMinute = clientNow.getMinutes();
+                    var clientSeconde = clientNow.getSeconds();
+                    $("#anneeClient").text(clientAnnee);
+                    $("#moisClient").text(clientMois);
+                    $("#jourClient").text(clientJour);
+                    $("#heureClient").text(clientHeure);
+                    $("#minuteClient").text(clientMinute);
+                    $('#secondeClient').text(clientSeconde);
+                    alarmeSplit = alarme.split(':');
+                    if (clientHeure == alarmeSplit[0] && clientMinute == alarmeSplit[1] && once == 0) {
+                        once++;
+                        alert('COCORICOOOO');
+                    }
+
+                }
+                setInterval(Horloge, 1000);
+
+            });
+
+            $('#poke').click(function () {
+                socket.emit('message', $('#alarme').val());
+            });
+        </script>
 
 
-    <footer>
-        <%- include('../partials/footer') %>
-    </footer>
-    <script>
-        socket.on('message', function (message) {
-            $('#messages').text(message);
-        });
 
-        $(function () {
 
-            function Horloge() {
-                var clientNow = new Date();
-                var clientAnnee = clientNow.getFullYear();
-                var clientMois = clientNow.getMonth();
-                var clientJour = clientNow.getDate();
-                var clientHeure = clientNow.getHours();
-                var clientMinute = clientNow.getMinutes();
-                var clientSeconde = clientNow.getSeconds();
-                $("#anneeClient").text(clientAnnee);
-                $("#moisClient").text(clientMois);
-                $("#jourClient").text(clientJour);
-                $("#heureClient").text(clientHeure);
-                $("#minuteClient").text(clientMinute);
-                $('#secondeClient').text(clientSeconde);
-            }
-            setInterval(Horloge, 1000);
-
-        });
-
-    </script>
+<footer>
+    <%- include('../partials/footer') %>
+</footer>
 </body>
 
 </html>
